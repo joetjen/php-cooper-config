@@ -23,11 +23,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # joetjen/cooper is unpublished; composer.json finds it through a
-      # path repository at ../php-cooper.
-      - name: Check out php-cooper beside this package
-        run: git clone --depth 1 https://github.com/joetjen/php-cooper.git ../php-cooper
-
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:

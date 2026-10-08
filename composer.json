@@ -15,19 +15,10 @@
   "support": {
     "issues": "http://github.com/joetjen/php-cooper-config/issues"
   },
-  "repositories": [
-    {
-      "type": "path",
-      "url": "../php-cooper",
-      "options": {
-        "symlink": true
-      }
-    }
-  ],
   "require": {
     "php": "^8.2",
     "composer-runtime-api": "^2.0",
-    "joetjen/cooper": "dev-main",
+    "joetjen/cooper": "^0.1",
     "symfony/console": "^6.4 || ^7.0 || ^8.0"
   },
   "require-dev": {

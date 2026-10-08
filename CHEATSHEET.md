@@ -1,7 +1,7 @@
 # Cheatsheet
 
 php-cooper-config on one page. The [README](README.md) explains the
-why; [CASC.md](../php-cooper/casc/CASC.md) is the language.
+why; [CASC.md](https://github.com/joetjen/php-cooper/blob/main/casc/CASC.md) is the language.
 
 ## Load -- once, at startup
 

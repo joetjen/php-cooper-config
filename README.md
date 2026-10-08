@@ -1,7 +1,7 @@
 # php-cooper-config
 
-Loads an application's [CASC](../php-cooper/casc/CASC.md) configuration
-with [`joetjen/cooper`](../php-cooper) -- once, at startup -- and gives
+Loads an application's [CASC](https://github.com/joetjen/php-cooper/blob/main/casc/CASC.md) configuration
+with [`joetjen/cooper`](https://github.com/joetjen/php-cooper) -- once, at startup -- and gives
 the application functions to read it.
 
 It is the PHP counterpart of the Elixir
@@ -52,9 +52,7 @@ vendor/bin/cooper-config init        # optional: scaffold config/
 ```
 
 PHP 8.2 or later. `joetjen/cooper` comes along as a dependency, and
-`.env` support with it -- there is nothing more to add. Until it
-is published, both live side by side and this package finds Cooper
-through a Composer `path` repository (`../php-cooper`).
+`.env` support with it -- there is nothing more to add.
 
 ## Eager only
 
@@ -385,8 +383,8 @@ greeting = "it's @{casc_writer_dollar}{name}"
 
 - [`CHEATSHEET.md`](CHEATSHEET.md) -- the API on one page.
 - [`CHANGELOG.md`](CHANGELOG.md) -- what changed.
-- [`php-cooper`](../php-cooper) and its
-  [CASC reference](../php-cooper/casc/CASC.md) -- everything about the
+- [`php-cooper`](https://github.com/joetjen/php-cooper) and its
+  [CASC reference](https://github.com/joetjen/php-cooper/blob/main/casc/CASC.md) -- everything about the
   language and the library that loads it.
 
 ## Development

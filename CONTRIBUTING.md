@@ -6,8 +6,7 @@ need to know before opening an issue or a pull request.
 ## Getting started
 
 ```sh
-git clone <this repository>
-git clone <php-cooper's repository> ../php-cooper   # until joetjen/cooper is published
+git clone https://github.com/joetjen/php-cooper-config.git
 cd php-cooper-config
 composer install
 composer test
