@@ -1,0 +1,57 @@
+{
+  "name": "joetjen/cooper-config",
+  "description": "Loads an application's CASC configuration once, at startup, with joetjen/cooper -- converted into plain PHP values, secrets handled by a per-application policy, compiled to an opcache-friendly PHP file between requests.",
+  "keywords": ["casc", "cooper", "config", "configuration"],
+  "type": "library",
+  "homepage": "http://github.com/joetjen/php-cooper-config",
+  "minimum-stability": "stable",
+  "license": "Apache-2.0",
+  "authors": [
+    {
+      "name": "Jan Oetjen",
+      "email": "joetjen.riveting388@passmail.net"
+    }
+  ],
+  "support": {
+    "issues": "http://github.com/joetjen/php-cooper-config/issues"
+  },
+  "require": {
+    "php": "^8.2",
+    "composer-runtime-api": "^2.0",
+    "joetjen/cooper": "^0.1",
+    "symfony/console": "^6.4 || ^7.0 || ^8.0"
+  },
+  "require-dev": {
+    "phpstan/phpstan": "^2.2",
+    "phpunit/phpunit": "^11.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "JOetjen\\CooperConfig\\": "src/"
+    },
+    "files": [
+      "src/functions.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "JOetjen\\CooperConfig\\Tests\\": "tests/"
+    }
+  },
+  "bin": [
+    "bin/cooper-config"
+  ],
+  "scripts": {
+    "test": "phpunit",
+    "test:coverage": "phpunit --coverage-text",
+    "analyse": "phpstan analyse src --level=8",
+    "precommit": ["@analyse", "@test"],
+    "docs": "docker run --rm -v $(pwd):/data phpdoc/phpdoc:3"
+  },
+  "config": {
+    "platform": {
+      "php": "8.2.0"
+    },
+    "sort-packages": true
+  }
+}
