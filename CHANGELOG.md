@@ -13,7 +13,7 @@ Planned as `0.1.0`, the first release.
 
 - `Config::load()`: loads `config/config.casc` under the Composer root
   package's directory (or a given `path`/`root`) with
-  [`joetjen/cooper`](../php-cooper), eagerly, once, at startup.
+  [`joetjen/cooper`](https://github.com/joetjen/php-cooper), eagerly, once, at startup.
   Every Cooper load option is passed through, `dotenvDir` included; an
   unknown option is an error listing the supported ones. `.env` files
   are Cooper's to find, at the project root by default, the `.env.<env>`
