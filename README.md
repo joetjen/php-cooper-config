@@ -221,6 +221,10 @@ depended on and checks it first:
 Anything different, and the document is loaded afresh and the file
 rewritten.
 
+The cache directory may be reached through a symlink (a symlinked
+project, or macOS's `/var`, which is `/private/var`); there is no need
+to `realpath()` it first.
+
 **Not compiled**, and loaded afresh every time: a load that called a
 `resolvers` entry (its answer could change any time and has nothing to
 fingerprint), a load given `importSchemes`, one holding a value the

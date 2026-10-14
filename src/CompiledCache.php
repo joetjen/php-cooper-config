@@ -290,9 +290,12 @@ final class CompiledCache
         }
 
         $temp = @tempnam($dir, '.' . self::PREFIX);
-        if ($temp === false || dirname($temp) !== $dir) {
+        if ($temp === false || realpath(dirname($temp)) !== realpath($dir)) {
             // `tempnam()` falls back to the system temp directory, from
-            // which a rename would not be atomic.
+            // which a rename would not be atomic. It answers with the
+            // resolved path, so both sides are compared resolved: a cache
+            // directory reached through a symlink (macOS's `/var` is
+            // `/private/var`) is not a fallback.
             if ($temp !== false) {
                 @unlink($temp);
             }

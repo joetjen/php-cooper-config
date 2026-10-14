@@ -275,6 +275,27 @@ final class CompiledCacheTest extends ConfigTestCase
         self::assertDirectoryDoesNotExist("{$root}/var");
     }
 
+    public function testACacheDirectoryReachedThroughASymlinkGetsACompiledFileALaterLoadReads(): void
+    {
+        // `tempnam()` answers with the resolved path (on macOS `/var` is
+        // `/private/var`), which once made every such directory look like
+        // a fallback to the system temp directory.
+        $root = $this->project(['config/config.casc' => self::casc("a = 1\n")]);
+        $real = $this->project();
+        $link = $this->project() . '/link';
+        symlink($real, $link);
+        $dir = "{$link}/compiled";
+
+        self::loadCached($root, ['compiledCache' => $dir]);
+        self::assertCount(1, self::cacheFiles("{$real}/compiled"));
+        self::assertFalse(Config::report()->fromCache);
+
+        Config::unload();
+        self::loadCached($root, ['compiledCache' => $dir]);
+        self::assertTrue(Config::report()->fromCache);
+        self::assertSame(['a' => 1], Config::all());
+    }
+
     public function testEveryValueSurvivesTheCompiledFile(): void
     {
         $root = $this->project(['config/config.casc' => self::casc(<<<'CASC'
