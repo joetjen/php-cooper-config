@@ -46,6 +46,12 @@ namespace JOetjen\CooperConfig\Casc;
  *  - A key matching CASC.md §4.1 and not a reserved word is written bare;
  *    any other is quoted (§4.2), by the same rule as a string.
  *  - `Raw` is written as given; `Commented` puts `# ` lines above its key.
+ *  - `Secret` marks its key secret (CASC.md §4.3): `*key = value`, or
+ *    `*key { ... }` for a block, every value in which loads as a secret.
+ *    It nests with `Commented` in either order. A list element has no
+ *    key to mark, so a `Secret` there is refused, as a `Commented` is --
+ *    but an entry of a map that is a list element has one, and is
+ *    written `[{ *key = value }]`.
  *
  * Anything else -- an object, a resource, `NAN`, text that is not
  * UTF-8 -- is an `\InvalidArgumentException` naming where in the tree
@@ -131,27 +137,19 @@ final class Writer
         foreach ($map as $key => $value) {
             $key = (string) $key;
             $where = $path === '' ? $key : "{$path}.{$key}";
-            $lines = [];
-            if ($value instanceof Commented) {
-                $lines = $value->lines;
-                $value = $value->value;
-                // A comment on a comment: both, outer first.
-                while ($value instanceof Commented) {
-                    $lines = [...$lines, ...$value->lines];
-                    $value = $value->value;
-                }
-            }
+            [$value, $lines, $secret] = self::unwrap($value);
             $pad = str_repeat($this->indent, $level);
             $entry = self::comment($lines, $pad);
+            $name = ($secret ? '*' : '') . $this->key($key, $where);
             $isBlock = self::isBlock($value);
             $map = $value instanceof MapValue ? $value->entries : $value;
             if ($isBlock && $map === []) {
-                $entry .= "{$pad}{$this->key($key, $where)} {}\n";
+                $entry .= "{$pad}{$name} {}\n";
             } elseif ($isBlock) {
                 assert(is_array($map));
-                $entry .= "{$pad}{$this->key($key, $where)} {\n" . $this->entries($map, $level + 1, $where) . "{$pad}}\n";
+                $entry .= "{$pad}{$name} {\n" . $this->entries($map, $level + 1, $where) . "{$pad}}\n";
             } else {
-                $entry .= "{$pad}{$this->key($key, $where)} = " . $this->value($value, $level, $where) . "\n";
+                $entry .= "{$pad}{$name} = " . $this->value($value, $level, $where) . "\n";
             }
 
             $standsApart = $isBlock || $lines !== [];
@@ -163,6 +161,30 @@ final class Writer
         }
 
         return $out;
+    }
+
+    /**
+     * A map entry's value without its `Commented` and `Secret` wrappers,
+     * which nest in any order: the comment lines (outer first -- a
+     * comment on a comment writes both) and whether any layer marked the
+     * key secret.
+     *
+     * @return array{0: mixed, 1: list<string>, 2: bool}
+     */
+    private static function unwrap(mixed $value): array
+    {
+        $lines = [];
+        $secret = false;
+        while ($value instanceof Commented || $value instanceof Secret) {
+            if ($value instanceof Commented) {
+                $lines = [...$lines, ...$value->lines];
+            } else {
+                $secret = true;
+            }
+            $value = $value->value;
+        }
+
+        return [$value, $lines, $secret];
     }
 
     /**
@@ -186,6 +208,7 @@ final class Writer
         return match (true) {
             $value instanceof Raw => $value->source,
             $value instanceof Commented => throw new \InvalidArgumentException("{$where}: a comment belongs to a map entry, not to a list element"),
+            $value instanceof Secret => throw new \InvalidArgumentException("{$where}: a secret marks a map entry's key, and a list element has none"),
             self::isBlock($value) => $this->mapElement($value instanceof MapValue ? $value->entries : $value, $level, $where),
             is_array($value) => $this->list($value, $level, $where),
             $value === null => 'nil',
@@ -240,11 +263,12 @@ final class Writer
         $inline = [];
         foreach ($map as $key => $value) {
             $key = (string) $key;
-            if ($value instanceof Commented || self::isBlock($value)) {
+            [$value, $lines, $secret] = self::unwrap($value);
+            if ($lines !== [] || self::isBlock($value)) {
                 $inline = null;
                 break;
             }
-            $inline[] = "{$this->key($key, "{$where}.{$key}")} = " . $this->value($value, $level, "{$where}.{$key}");
+            $inline[] = ($secret ? '*' : '') . "{$this->key($key, "{$where}.{$key}")} = " . $this->value($value, $level, "{$where}.{$key}");
         }
         if ($inline !== null) {
             $text = '{ ' . implode(', ', $inline) . ' }';

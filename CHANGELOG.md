@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- **`Casc\Secret`** marks a written entry's key secret (CASC.md §4.3):
+  `new Secret($value)` as a map entry's value writes `*key = value`, or
+  `*key { ... }` for a block. It nests with `Commented` in either order.
+  A list element has no key to mark, so a `Secret` there is refused, as
+  a `Commented` is; an entry of a map inside a list is written
+  `[{ *key = value }]`.
+
 ### Fixed
 
 - **The compiled cache is written behind a symlink.** A cache directory
