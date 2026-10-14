@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Added
+
+- **`Casc\Secret`** marks a written entry's key secret (CASC.md §4.3):
+  `new Secret($value)` as a map entry's value writes `*key = value`, or
+  `*key { ... }` for a block. It nests with `Commented` in either order.
+  A list element has no key to mark, so a `Secret` there is refused, as
+  a `Commented` is; an entry of a map inside a list is written
+  `[{ *key = value }]`.
+
+### Fixed
+
+- **The compiled cache is written behind a symlink.** A cache directory
+  reached through one (a symlinked project, or macOS's `/var`, which is
+  `/private/var`) never got a compiled file, so every request parsed
+  the whole document: `tempnam()` answers with the resolved path, which
+  was taken for a fallback to the system temp directory. Both sides are
+  compared resolved now, so consumers no longer need to `realpath()`
+  the cache directory themselves; a genuine fallback is still refused.
+
 ## [0.1.0] - 2026-10-08
 
 ### Added

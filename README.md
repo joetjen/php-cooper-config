@@ -221,6 +221,10 @@ depended on and checks it first:
 Anything different, and the document is loaded afresh and the file
 rewritten.
 
+The cache directory may be reached through a symlink (a symlinked
+project, or macOS's `/var`, which is `/private/var`); there is no need
+to `realpath()` it first.
+
 **Not compiled**, and loaded afresh every time: a load that called a
 `resolvers` entry (its answer could change any time and has nothing to
 fingerprint), a load given `importSchemes`, one holding a value the
@@ -328,12 +332,13 @@ an existing configuration (a framework's `config/*.php`) or generates
 one.
 
 ```php
-use JOetjen\CooperConfig\Casc\{Commented, MapValue, Raw, Writer};
+use JOetjen\CooperConfig\Casc\{Commented, MapValue, Raw, Secret, Writer};
 
 echo (new Writer())->write([
     'database' => [
         'host' => new Commented(new Raw('${DB_HOST:"127.0.0.1"}'), 'was: env("DB_HOST")'),
         'port' => 5432,
+        'password' => new Secret(new Raw('${DB_PASSWORD}')),
     ],
     'greeting' => "it's \${name}",
 ]);
@@ -349,6 +354,7 @@ database {
   host = ${DB_HOST:"127.0.0.1"}
 
   port = 5432
+  *password = ${DB_PASSWORD}
 }
 
 greeting = "it's @{casc_writer_dollar}{name}"
@@ -376,6 +382,11 @@ greeting = "it's @{casc_writer_dollar}{name}"
   `!module("Foo.Bar")`, `5m`, an atom); `Commented` puts `# ` lines
   above an entry. `write($tree, $comment)` puts a comment under the
   header.
+- `Secret` marks an entry's key secret (CASC.md §4.3): `*key = value`,
+  or `*key { ... }` for a block, every value in which loads as a
+  secret. It nests with `Commented` in either order. A list element has
+  no key to mark, so a `Secret` there is refused (as a `Commented` is);
+  an entry of a map inside a list has one: `[{ *password = "x" }]`.
 - An object, a resource, `NAN` and text that is not UTF-8 are refused
   with an `\InvalidArgumentException` naming where they are.
 

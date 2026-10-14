@@ -5,9 +5,11 @@ declare(strict_types=1);
 namespace JOetjen\CooperConfig\Tests\Casc;
 
 use JOetjen\Cooper\Cooper;
+use JOetjen\Cooper\Value\CooperSecret;
 use JOetjen\CooperConfig\Casc\Commented;
 use JOetjen\CooperConfig\Casc\MapValue;
 use JOetjen\CooperConfig\Casc\Raw;
+use JOetjen\CooperConfig\Casc\Secret;
 use JOetjen\CooperConfig\Casc\Writer;
 use PHPUnit\Framework\TestCase;
 
@@ -330,6 +332,94 @@ final class WriterTest extends TestCase
         $this->expectException(\InvalidArgumentException::class);
 
         (new Writer())->write(['v' => [new Commented(1, 'x')]]);
+    }
+
+    public function testASecretIsWrittenWithItsKeyMarkedSecret(): void
+    {
+        $source = (new Writer())->write(['db' => ['password' => new Secret('hunter2'), 'user' => 'app']]);
+
+        self::assertStringContainsString("  *password = \"hunter2\"\n", $source);
+        $loaded = self::load($source);
+        self::assertInstanceOf(CooperSecret::class, $loaded['db']['password']);
+        self::assertSame('hunter2', $loaded['db']['password']->reveal());
+        self::assertSame('app', $loaded['db']['user']);
+    }
+
+    public function testASecretKeyThatMustBeQuotedIsQuotedAfterTheStar(): void
+    {
+        $source = (new Writer())->write(['api key' => new Secret('k')]);
+
+        self::assertStringContainsString("*\"api key\" = \"k\"\n", $source);
+        $loaded = self::load($source);
+        self::assertInstanceOf(CooperSecret::class, $loaded['api key']);
+        self::assertSame('k', $loaded['api key']->reveal());
+    }
+
+    public function testASecretRawValueIsWrittenAsGiven(): void
+    {
+        $source = (new Writer())->write(['password' => new Secret(new Raw('${DB_PASSWORD}'))]);
+
+        self::assertStringContainsString("*password = \${DB_PASSWORD}\n", $source);
+        $loaded = self::load($source, ['DB_PASSWORD' => 's3cret']);
+        self::assertInstanceOf(CooperSecret::class, $loaded['password']);
+        self::assertSame('s3cret', $loaded['password']->reveal());
+    }
+
+    public function testASecretBlockIsWrittenAsAStarredBlockEveryValueInWhichIsSecret(): void
+    {
+        $source = (new Writer())->write(['credentials' => new Secret(['user' => 'u', 'tokens' => ['a', 'b']]), 'empty' => new Secret(new MapValue([]))]);
+
+        self::assertStringContainsString("*credentials {\n  user = \"u\"\n", $source);
+        self::assertStringContainsString("*empty {}\n", $source);
+        $loaded = self::load($source);
+        self::assertInstanceOf(CooperSecret::class, $loaded['credentials']['user']);
+        self::assertSame('u', $loaded['credentials']['user']->reveal());
+        self::assertInstanceOf(CooperSecret::class, $loaded['credentials']['tokens']);
+        self::assertSame(['a', 'b'], $loaded['credentials']['tokens']->reveal());
+        self::assertInstanceOf(CooperSecret::class, $loaded['empty']);
+    }
+
+    public function testASecretComposesWithACommentInEitherOrder(): void
+    {
+        $source = (new Writer())->write([
+            'a' => new Secret(new Commented('x', 'was: env("A")')),
+            'b' => new Commented(new Secret('y'), 'was: env("B")'),
+            'c' => new Commented(new Secret(new Commented('z', 'inner')), 'outer'),
+        ]);
+
+        self::assertStringContainsString("# was: env(\"A\")\n*a = \"x\"\n", $source);
+        self::assertStringContainsString("# was: env(\"B\")\n*b = \"y\"\n", $source);
+        self::assertStringContainsString("# outer\n# inner\n*c = \"z\"\n", $source);
+        $loaded = self::load($source);
+        foreach (['a' => 'x', 'b' => 'y', 'c' => 'z'] as $key => $value) {
+            self::assertInstanceOf(CooperSecret::class, $loaded[$key]);
+            self::assertSame($value, $loaded[$key]->reveal());
+        }
+    }
+
+    public function testASecretOnAnEntryOfAMapInAListIsWritten(): void
+    {
+        $source = (new Writer())->write([
+            'users' => [['name' => 'a', 'password' => new Secret('p')]],
+            'pools' => [['auth' => new Secret(['token' => 't'])]],
+        ]);
+
+        self::assertStringContainsString("users = [{ name = \"a\", *password = \"p\" }]\n", $source);
+        self::assertStringContainsString("    *auth {\n      token = \"t\"\n", $source);
+        $loaded = self::load($source);
+        self::assertSame('a', $loaded['users'][0]['name']);
+        self::assertInstanceOf(CooperSecret::class, $loaded['users'][0]['password']);
+        self::assertSame('p', $loaded['users'][0]['password']->reveal());
+        self::assertInstanceOf(CooperSecret::class, $loaded['pools'][0]['auth']['token']);
+        self::assertSame('t', $loaded['pools'][0]['auth']['token']->reveal());
+    }
+
+    public function testASecretAsAListElementIsRefusedForItHasNoKeyToMark(): void
+    {
+        $this->expectException(\InvalidArgumentException::class);
+        $this->expectExceptionMessage('v[0]: a secret marks a map entry\'s key, and a list element has none');
+
+        (new Writer())->write(['v' => [new Secret('x')]]);
     }
 
     public function testAValueWithNoCascSpellingIsRefusedNamingWhere(): void
