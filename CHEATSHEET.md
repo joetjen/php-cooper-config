@@ -103,11 +103,12 @@ new CacheClearCommand(?string $projectRoot = null, ?string $cacheDir = null);
 ## Writing CASC
 
 ```php
-use JOetjen\CooperConfig\Casc\{Commented, MapValue, Raw, Writer};
+use JOetjen\CooperConfig\Casc\{Commented, MapValue, Raw, Secret, Writer};
 
 (new Writer(string $version = '1.0', string $indent = '  '))->write(array $tree, string $comment = ''): string
 new Raw('${DB_HOST:"127.0.0.1"}')          // written as is
 new Commented($value, 'was: env("X")')     // "# was: ..." above the key
+new Secret($value)                         // `*key = ...`; nests with Commented either way
 new MapValue([])                           // a map, even empty: `{}`, not `[]`
 ```
 
@@ -119,4 +120,5 @@ new MapValue([])                           // a map, even empty: `{}`, not `[]`
 | `"text"` | `"text"`; `'${x}'` when it holds an opener; helper `@{casc_writer_*}` when it also holds `'` |
 | `1.0`, `INF`, `null` | `1.0`, `inf`, `nil` |
 | key `a.b`, `nil`, `1` | `"a.b"`, `"nil"`, `"1"` |
+| `'pw' => new Secret('x')`, `'db' => new Secret([...])` | `*pw = "x"`, `*db { ... }`; refused as a list element, fine in a map inside one |
 | `NAN`, object, resource, non-UTF-8 | `\InvalidArgumentException` naming where |
