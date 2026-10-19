@@ -42,7 +42,7 @@ Config::get('database.timeout');     // 5000 -- milliseconds
 cooper_config('cache.ttl', 60);      // 60 -- not configured, so the default
 ```
 
-**Status: 0.2.0, pre-release.** See [CHANGELOG.md](CHANGELOG.md).
+**Status: 0.3.0, pre-release.** See [CHANGELOG.md](CHANGELOG.md).
 
 ## Installation
 
