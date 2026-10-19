@@ -18,7 +18,7 @@
   "require": {
     "php": "^8.2",
     "composer-runtime-api": "^2.0",
-    "joetjen/cooper": "^0.1",
+    "joetjen/cooper": "^0.2",
     "symfony/console": "^6.4 || ^7.0 || ^8.0"
   },
   "require-dev": {
