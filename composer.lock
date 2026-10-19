@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0cc028793264897081935f671257c54c",
+    "content-hash": "65d182e74d687818dffa583b720e5b59",
     "packages": [
         {
             "name": "graham-campbell/result-type",
@@ -70,16 +70,16 @@
         },
         {
             "name": "joetjen/cooper",
-            "version": "v0.1.0",
+            "version": "v0.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/joetjen/php-cooper.git",
-                "reference": "9521957d318df5ca269a42a3968e3c399066d273"
+                "reference": "690d940fe7602f2be3355abb08c975cbb02d3d42"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/joetjen/php-cooper/zipball/9521957d318df5ca269a42a3968e3c399066d273",
-                "reference": "9521957d318df5ca269a42a3968e3c399066d273",
+                "url": "https://api.github.com/repos/joetjen/php-cooper/zipball/690d940fe7602f2be3355abb08c975cbb02d3d42",
+                "reference": "690d940fe7602f2be3355abb08c975cbb02d3d42",
                 "shasum": ""
             },
             "require": {
@@ -119,9 +119,9 @@
             ],
             "support": {
                 "issues": "http://github.com/joetjen/php-cooper/issues",
-                "source": "https://github.com/joetjen/php-cooper/tree/v0.1.0"
+                "source": "https://github.com/joetjen/php-cooper/tree/v0.2.0"
             },
-            "time": "2026-10-08T18:27:15+00:00"
+            "time": "2026-10-19T00:00:54+00:00"
         },
         {
             "name": "phpoption/phpoption",

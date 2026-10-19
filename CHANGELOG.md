@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-10-19
+
+### Changed
+
+- **Requires `joetjen/cooper` 0.2** (`^0.2`); 0.1 is no longer
+  admitted. Nothing here changes with it: a `cooper-secrets` module is
+  still resolved to its class-string, which 0.2 gives back for a loaded
+  module as 0.1 did. Its one change of behaviour, a module interpolated
+  into a string reading as the name the document wrote (`Foo.Bar`),
+  reaches the loaded configuration unchanged.
+
 ## [0.2.0] - 2026-10-14
 
 ### Added
