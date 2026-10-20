@@ -5,5 +5,5 @@ composer.phar
 *.log
 .DS_Store
 /doc/
-/.phpdoc/
+/.phpdoc/cache/
 /var/
