@@ -1,5 +1,11 @@
 # php-cooper-config
 
+> [!WARNING]
+> **Under heavy development: not for production use before `1.0.0`.**
+> Things can and will break, and the specification can and will change,
+> between any two releases until `1.0.0`. Do not use this library in a
+> production system yet.
+
 Loads an application's [CASC](https://github.com/joetjen/php-cooper/blob/main/casc/CASC.md) configuration
 with [`joetjen/cooper`](https://github.com/joetjen/php-cooper) -- once, at startup -- and gives
 the application functions to read it.
