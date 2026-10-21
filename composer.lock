@@ -70,16 +70,16 @@
         },
         {
             "name": "joetjen/cooper",
-            "version": "v0.2.0",
+            "version": "v0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/joetjen/php-cooper.git",
-                "reference": "690d940fe7602f2be3355abb08c975cbb02d3d42"
+                "reference": "2d9dce5bf46fdbc2cf77b6ba02e88a1d34fb7711"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/joetjen/php-cooper/zipball/690d940fe7602f2be3355abb08c975cbb02d3d42",
-                "reference": "690d940fe7602f2be3355abb08c975cbb02d3d42",
+                "url": "https://api.github.com/repos/joetjen/php-cooper/zipball/2d9dce5bf46fdbc2cf77b6ba02e88a1d34fb7711",
+                "reference": "2d9dce5bf46fdbc2cf77b6ba02e88a1d34fb7711",
                 "shasum": ""
             },
             "require": {
@@ -108,7 +108,7 @@
                     "email": "joetjen.riveting388@passmail.net"
                 }
             ],
-            "description": "Loads CASC config files -- a hierarchical, extensible config language with imports, variables, interpolation, loops, and consumer-registered resolvers/tags -- into native PHP values, secrets redacted by default.",
+            "description": "Under heavy development: not for production use before 1.0.0. Loads CASC config files -- a hierarchical, extensible config language with imports, variables, interpolation, loops, and consumer-registered resolvers/tags -- into native PHP values, secrets redacted by default.",
             "homepage": "http://github.com/joetjen/php-cooper",
             "keywords": [
                 "casc",
@@ -119,9 +119,9 @@
             ],
             "support": {
                 "issues": "http://github.com/joetjen/php-cooper/issues",
-                "source": "https://github.com/joetjen/php-cooper/tree/v0.2.0"
+                "source": "https://github.com/joetjen/php-cooper/tree/v0.2.1"
             },
-            "time": "2026-10-19T00:00:54+00:00"
+            "time": "2026-10-21T04:55:34+00:00"
         },
         {
             "name": "phpoption/phpoption",
