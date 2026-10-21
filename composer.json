@@ -1,6 +1,6 @@
 {
   "name": "joetjen/cooper-config",
-  "description": "Loads an application's CASC configuration once, at startup, with joetjen/cooper -- converted into plain PHP values, secrets handled by a per-application policy, compiled to an opcache-friendly PHP file between requests.",
+  "description": "Under heavy development: not for production use before 1.0.0. Loads an application's CASC configuration once, at startup, with joetjen/cooper -- converted into plain PHP values, secrets handled by a per-application policy, compiled to an opcache-friendly PHP file between requests.",
   "keywords": ["casc", "cooper", "config", "configuration"],
   "type": "library",
   "homepage": "http://github.com/joetjen/php-cooper-config",
